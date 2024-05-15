@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { UserInfo, remult, repo } from "remult";
 
 import { User } from "../../../../shared/user";
-import { withRemult, rr } from "../../[...remult]/route";
+import { api } from "../../[...remult]/api";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -17,11 +17,10 @@ export const authOptions: NextAuthOptions = {
         },
       },
       authorize: (info) =>
-        withRemult(async () => {
+        api.withRemult(async () => {
           if (!info?.name) return null;
           const r = remult;
-          const r2 = rr;
-          console.log(r.dataProvider, r2.dataProvider);
+          console.log("authorize", process.pid, r.dataProvider);
           const user = await repo(User).findFirst({ name: info.name });
           if (!user) return null;
           // validate password etc...
@@ -31,10 +30,9 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     session: ({ session, token }) => {
-      return withRemult(async () => {
+      return api.withRemult(async () => {
         const r = remult;
-        const r2 = rr;
-        console.log("session", r.dataProvider, r2.dataProvider);
+        console.log("session", process.pid, r.dataProvider);
         return {
           ...session,
           user: token?.sub
