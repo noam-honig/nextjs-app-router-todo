@@ -11,7 +11,6 @@ export const api = remultNextApp({
   entities: [Task, User],
   controllers: [TasksController],
   getUser: async (req) => {
-    console.log("get user", process.pid);
     return (await getServerSession(authOptions))?.user as UserInfo;
   },
   admin: true,
@@ -23,4 +22,3 @@ export const api = remultNextApp({
       ]);
   },
 });
-export const { withRemult } = api;

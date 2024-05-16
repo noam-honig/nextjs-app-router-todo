@@ -19,27 +19,21 @@ export const authOptions: NextAuthOptions = {
       authorize: (info) =>
         api.withRemult(async () => {
           if (!info?.name) return null;
-          const r = remult;
-          console.log("authorize", process.pid, r.dataProvider);
           const user = await repo(User).findFirst({ name: info.name });
           if (!user) return null;
           // validate password etc...
           return toUserInfo(user);
-        }, true),
+        }),
     }),
   ],
   callbacks: {
     session: ({ session, token }) => {
-      return api.withRemult(async () => {
-        const r = remult;
-        console.log("session", process.pid, r.dataProvider);
-        return {
-          ...session,
-          user: token?.sub
-            ? toUserInfo(await repo(User).findId(token?.sub))
-            : undefined,
-        };
-      }, true);
+      return api.withRemult(async () => ({
+        ...session,
+        user: token?.sub
+          ? toUserInfo(await repo(User).findId(token?.sub))
+          : undefined,
+      }));
     },
   },
 };
