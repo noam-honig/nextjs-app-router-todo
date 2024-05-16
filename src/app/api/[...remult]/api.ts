@@ -5,7 +5,7 @@ import { TasksController } from "../../../shared/tasksController";
 import { User } from "../../../shared/user";
 
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "../auth/[...nextauth]/auth";
 
 export const api = remultNextApp({
   entities: [Task, User],
